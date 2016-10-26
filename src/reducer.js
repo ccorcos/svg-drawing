@@ -5,7 +5,7 @@ export const initialState = Immutable.fromJS({
   started: false,
   style: {
     stroke: 'black',
-    strokeWidth: '1'
+    strokeWidth: 1,
   },
   paths: [{
     style: {
