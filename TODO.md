@@ -1,0 +1,8 @@
+- color palette
+- stroke width palette
+- record timestamp
+- undo
+- redo
+- replay with slider
+- react native
+  - firebase!
