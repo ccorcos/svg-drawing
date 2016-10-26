@@ -3,4 +3,6 @@ export default {
   move: 'drawing/move',
   end: 'drawing/end',
   style: 'drawing/style',
+  undo: 'drawing/undo',
+  redo: 'drawing/redo',
 }

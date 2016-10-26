@@ -1,9 +1,11 @@
 import Immutable from 'immutable'
 import actionTypes from './actionTypes'
 import { minDelta } from './defs'
-import { squared, sqrt, distance } from './utils'
+import { distance } from './utils'
 
 export const initialState = Immutable.fromJS({
+  time: 1,
+  actions: [],
   started: false,
   style: {
     stroke: 'black',
@@ -49,6 +51,18 @@ const createPath = (point, style) => state =>
 const startPath = state => state.set('started', true)
 const endPath = state => state.set('started', false)
 
+const incTime = state => state.update('time', time => time + 1)
+const decTime = state => state.update('time', time => time - 1)
+
+const newFuture = state => state.update('paths', paths =>
+  paths.slice(0, state.get('time') + 1)
+)
+
+const setStyles = styles => state =>
+  state.update('style', style =>
+    style.merge(Immutable.fromJS(styles))
+  )
+
 const addPoint = point => state =>
   state.update('paths', paths =>
     paths.update(paths.size - 1, path =>
@@ -63,29 +77,51 @@ const addPoint = point => state =>
     )
   )
 
+const recordAction = action => state => state.update('actions', actions =>
+  actions.push(action)
+)
+
 export default (state=initialState, action) => {
   switch(action.type) {
     case actionTypes.start: {
       return pipe([
+        recordAction(action),
+        newFuture,
         createPath(action.point, state.get('style')),
         startPath,
+        incTime,
       ], state)
     }
     case actionTypes.move: {
       return pipe([
+        recordAction(action),
         addPoint(action.point)
       ], state)
     }
     case actionTypes.end: {
       return pipe([
+        recordAction(action),
         addPoint(action.point),
         endPath,
       ], state)
     }
     case actionTypes.style: {
-      return state.update('style', style => {
-        return style.merge(Immutable.fromJS(action.style))
-      })
+      return pipe([
+        recordAction(action),
+        setStyles(action.style),
+      ], state)
+    }
+    case actionTypes.undo: {
+      return pipe([
+        recordAction(action),
+        decTime,
+      ], state)
+    }
+    case actionTypes.redo: {
+      return pipe([
+        recordAction(action),
+        incTime,
+      ], state)
     }
     default: {
       return state

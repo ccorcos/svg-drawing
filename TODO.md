@@ -1,11 +1,12 @@
-- smoothing
-  - min distance between points
-  - beizer smoothing
 
-
-- record timestamp
-- undo
-- redo
 - replay with slider
+- css
+  - user events
+  - cursor
+- bonus
+  - parameterize the whole thing through props
+  - publish package
+  - deploy example with github pages
+  - curve smoothing
 - react native
   - firebase!

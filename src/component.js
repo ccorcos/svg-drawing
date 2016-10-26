@@ -1,6 +1,5 @@
 import React from 'react'
 import { viewBox, colorOptions, widthOptions } from './defs'
-import { minus, add, normalize, multiply } from './utils'
 
 const ColorPalette = props => {
   const colors = colorOptions.map(color =>
@@ -24,9 +23,6 @@ const ColorPalette = props => {
     <div
       style={{
         display: 'flex',
-        margin: -5,
-        paddingTop: 5,
-        paddingBottom: 5,
         alignItems: 'center',
       }}
     >
@@ -62,14 +58,25 @@ const WidthPalette = props => {
     <div
       style={{
         display: 'flex',
-        margin: -5,
-        paddingTop: 5,
-        paddingBottom: 5,
         alignItems: 'center',
       }}
     >
       <span>Stroke:</span>
       {widths}
+    </div>
+  )
+}
+
+const UndoPalette = props => {
+  const canUndo = props.paths.size > 1
+  const canRedo = props.paths.size > props.time + 1
+  return (
+    <div style={{
+      paddingTop: 5,
+      paddingBottom: 5,
+    }}>
+      <button disabled={!canUndo} onClick={props.onUndo}>undo</button>
+      <button disabled={!canRedo} onClick={props.onRedo}>redo</button>
     </div>
   )
 }
@@ -101,7 +108,7 @@ const getPoint = (e, n) => {
 
 const Drawing = props => {
 
-  const paths = props.paths.map((path, i) =>
+  const paths = props.paths.slice(0, props.time + 1).map((path, i) =>
     <Path path={path} key={i}/>
   ).toArray()
 
@@ -129,6 +136,7 @@ const SvgDrawing = props => {
     <div>
       <ColorPalette {...props}/>
       <WidthPalette {...props}/>
+      <UndoPalette {...props}/>
       <Drawing {...props}/>
     </div>
   )
