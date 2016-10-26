@@ -1,5 +1,8 @@
-- color palette
-- stroke width palette
+- smoothing
+  - min distance between points
+  - beizer smoothing
+
+
 - record timestamp
 - undo
 - redo
