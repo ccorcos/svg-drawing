@@ -74,63 +74,12 @@ const WidthPalette = props => {
   )
 }
 
-// stroke width
-// undo / redo
-
 const makeLine = points => {
   return 'M' +points.map(point => `${point.get('x')} ${point.get('y')}`).join(' L ')
 }
 
-// const makeCurvedSegment = (left, center, right) => {
-//   // r - l, make it a unit vector
-//   const delta = multiply(normalize(minus(right, left)), 50)
-//   // C x1 y1, x2 y2, x y
-//   const start = minus(center, delta)
-//   const end = add(center, delta)
-//   return `C ${start.x} ${start.y}, ${end.x} ${end.y}, ${center.x} ${center.y}`
-// }
-//
-// const makeCurve = points => {
-//   const middle = points.rest().butLast().zipWith(
-//     (center, left) => ({center: center.toJS(), left: left.toJS()}),
-//     points.butLast().butLast()
-//   ).zipWith(
-//     (acc, right) => ({...acc, right: right.toJS()}),
-//     points.rest().rest()
-//   ).map(
-//     ({left, center, right}) => makeCurvedSegment(left, center, right)
-//   ).join(' ')
-//   const first = points.first().toJS()
-//   const last = points.last().toJS()
-//   return [
-//     `M ${first.x} ${first.y}`,
-//     middle,
-//     `L ${last.x} ${last.y}`,
-//   ].join(' ')
-// }
-
-const makeCurve = points => {
-  // S x2 y2, x y
-  let L = ','
-  const first = points.first().toJS()
-  const last = points.last().toJS()
-  console.log(points.map(point => {
-    L = L === 'S' ? ',' : 'S'
-    return `${L} ${point.get('x')} ${point.get('y')}`
-  }).join(' '))
-  return [
-    `M ${first.x} ${first.y}`,
-    points.map(point => {
-      L = L === 'S' ? ',' : 'S'
-      return `${L} ${point.get('x')} ${point.get('y')}`
-    }).join(' '),
-    `${L === 'S' ? 'L' : ','} ${last.x} ${last.y}`,
-  ].join(' ')
-}
-
-
 const Path = props => {
-  const d = makeCurve(props.path.get('points'))
+  const d = makeLine(props.path.get('points'))
   return (
     <path
       d={d}
