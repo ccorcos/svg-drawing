@@ -3,9 +3,12 @@ import actionTypes from './actionTypes'
 import { minDelta } from './defs'
 import { distance } from './utils'
 
-export const initialState = Immutable.fromJS({
+const pipe = (fns, state) => state.withMutations(st =>
+  fns.reduce((s, fn) => fn(s), st)
+)
+
+export const drawingInitialState = Immutable.fromJS({
   time: 1,
-  actions: [],
   started: false,
   style: {
     stroke: 'black',
@@ -35,10 +38,6 @@ export const initialState = Immutable.fromJS({
     ],
   }]
 })
-
-const pipe = (fns, state) => state.withMutations(st =>
-  fns.reduce((s, fn) => fn(s), st)
-)
 
 const createPath = (point, style) => state =>
   state.update('paths', paths =>
@@ -77,15 +76,11 @@ const addPoint = point => state =>
     )
   )
 
-const recordAction = action => state => state.update('actions', actions =>
-  actions.push(action)
-)
 
-export default (state=initialState, action) => {
+const drawingReducer = (state=drawingInitialState, action) => {
   switch(action.type) {
     case actionTypes.start: {
       return pipe([
-        recordAction(action),
         newFuture,
         createPath(action.point, state.get('style')),
         startPath,
@@ -94,32 +89,27 @@ export default (state=initialState, action) => {
     }
     case actionTypes.move: {
       return pipe([
-        recordAction(action),
         addPoint(action.point)
       ], state)
     }
     case actionTypes.end: {
       return pipe([
-        recordAction(action),
         addPoint(action.point),
         endPath,
       ], state)
     }
     case actionTypes.style: {
       return pipe([
-        recordAction(action),
         setStyles(action.style),
       ], state)
     }
     case actionTypes.undo: {
       return pipe([
-        recordAction(action),
         decTime,
       ], state)
     }
     case actionTypes.redo: {
       return pipe([
-        recordAction(action),
         incTime,
       ], state)
     }
@@ -128,3 +118,67 @@ export default (state=initialState, action) => {
     }
   }
 }
+
+const pause = state => state.set('pause', true)
+const play = state => state.set('pause', false)
+const setReplay = time => state => state.set('replay', time)
+const computeReplay = state => state.set(
+  'states',
+  state.get('actions').reduce(
+    (states, action) => {
+      return states.push(drawingReducer(states.last(), action))
+    },
+    Immutable.fromJS([drawingInitialState])
+  )
+)
+const setReplayDrawingState = state => state.merge(state.getIn(['states', state.get('replay')]))
+
+const recordAction = action => state => state.update('actions', actions =>
+  actions.push(action)
+)
+
+const replayInitialState = drawingInitialState.merge(Immutable.fromJS({
+  pause: false,
+  replay: 0,
+  actions: [],
+  states: [],
+}))
+
+const replayReducer = (state=replayInitialState, action) => {
+  switch(action.type) {
+    case actionTypes.start:
+    case actionTypes.move:
+    case actionTypes.end:
+    case actionTypes.style:
+    case actionTypes.undo:
+    case actionTypes.redo: {
+      if (state.get('pause')) {
+        return state
+      }
+      return drawingReducer(recordAction(action)(state), action)
+    }
+    case actionTypes.pause: {
+      return pipe([
+        pause,
+        computeReplay,
+        setReplayDrawingState,
+      ], state)
+    }
+    case actionTypes.play: {
+      return pipe([
+        play,
+      ], state)
+    }
+    case actionTypes.replay: {
+      return pipe([
+        setReplay(action.value),
+        setReplayDrawingState,
+      ], state)
+    }
+    default: {
+      return state
+    }
+  }
+}
+
+export default replayReducer

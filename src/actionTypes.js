@@ -5,4 +5,7 @@ export default {
   style: 'drawing/style',
   undo: 'drawing/undo',
   redo: 'drawing/redo',
+  pause: 'replay/pause',
+  play: 'replay/play',
+  replay: 'replay/change',
 }

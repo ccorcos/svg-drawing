@@ -67,7 +67,7 @@ const WidthPalette = props => {
   )
 }
 
-const UndoPalette = props => {
+const Undoable = props => {
   const canUndo = props.paths.size > 1
   const canRedo = props.paths.size > props.time + 1
   return (
@@ -77,6 +77,39 @@ const UndoPalette = props => {
     }}>
       <button disabled={!canUndo} onClick={props.onUndo}>undo</button>
       <button disabled={!canRedo} onClick={props.onRedo}>redo</button>
+    </div>
+  )
+}
+
+const Replay = props => {
+  const size = props.states.size - 1
+  const button = props.pause ? (
+    <button onClick={props.onPlay}>
+      play
+    </button>
+  ) : (
+    <button onClick={props.onPause}>
+      pause
+    </button>
+  )
+  const range = props.pause ? (
+    <input
+      type="range"
+      min={0}
+      max={size}
+      value={props.replay}
+      onChange={e => props.onReplay(e.target.value)}
+    />
+  ) : (
+    false
+  )
+  return (
+    <div style={{
+      paddingTop: 5,
+      paddingBottom: 5,
+    }}>
+      {button}
+      {range}
     </div>
   )
 }
@@ -117,7 +150,7 @@ const Drawing = props => {
     <svg
       ref={n => node = n}
       viewBox={`0 0 ${viewBox} ${viewBox}`}
-      style={{flex: 1}}
+      style={{flex: 1, cursor: 'crosshair'}}
       onMouseDown={e => props.onStart(getPoint(e, node))}
       onTouchStart={e => props.onStart(getPoint(e, node))}
       onMouseMove={e => props.started && props.onMove(getPoint(e, node))}
@@ -136,7 +169,8 @@ const SvgDrawing = props => {
     <div>
       <ColorPalette {...props}/>
       <WidthPalette {...props}/>
-      <UndoPalette {...props}/>
+      <Undoable {...props}/>
+      <Replay {...props}/>
       <Drawing {...props}/>
     </div>
   )

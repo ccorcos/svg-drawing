@@ -1,8 +1,5 @@
 
 - replay with slider
-- css
-  - user events
-  - cursor
 - bonus
   - parameterize the whole thing through props
   - publish package
