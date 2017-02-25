@@ -1,6 +1,4 @@
 import { css } from 'glamor'
-import R from 'ramda'
-import { Vector3 } from 'three'
 
 const size = 200
 const half = size / 2
@@ -24,15 +22,6 @@ const styles = {
   }),
 }
 
-
-// z----> x
-// |
-// |
-// y
-//
-// [x, y, z]
-const vector = [1, 0, 0]
-
 // get out a piece of paper and draw the transformations
 
 const center = `translate3d(${nhalf}px, ${nhalf}px, 0)`
@@ -53,11 +42,8 @@ const getPoint = (e, n) => {
 }
 
 const Cube = props => {
-  const vec = props.state.get('vec')
-  const unit = new Vector3(1, 0, 0)
-  const angle = Math.acos(vec.dot(unit))
-  const axis = vec.clone().cross(unit).normalize()
-  const rotation = `rotate3d(${axis.x}, ${axis.y}, ${axis.z}, ${angle}rad)`
+  const orientation = props.state.get('orientation')
+  const rotation = `matrix3d(${orientation.elements.join(', ')})`
   let node
   return (
     <div

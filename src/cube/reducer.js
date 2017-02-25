@@ -2,10 +2,37 @@ import Immutable from 'immutable'
 import actionTypes from './actionTypes'
 import { minDelta } from '../defs'
 import { distance, pipe } from '../utils'
-import { Vector3, Vector2 } from 'three'
+import { Vector3, Vector2, Matrix4 } from 'three'
+
+
+const Matrix = (...args) => {
+  const m = new Matrix4()
+  m.set(...args)
+  return m
+}
+
+const rotationX = angle => {
+  const m = new Matrix4()
+  m.makeRotationX(angle)
+  return m
+}
+
+const rotationY = angle => {
+  const m = new Matrix4()
+  m.makeRotationY(angle)
+  return m
+}
+
+const rotateX = (angle, m) => rotationX(angle).multiply(m)
+const rotateY = (angle, m) => rotationY(angle).multiply(m)
 
 export const orientationInitialState = Immutable.Map({
-  vec: new Vector3(1, 0, 0),
+  orientation: Matrix(
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1
+  ),
   speed: 1, // rotation speed
   prev: undefined, // previous point
   dragging: false,
@@ -15,14 +42,14 @@ const rotateToPoint = next => state => {
   const speed = state.get('speed')
   const prev = state.get('prev')
   const diff = next.clone().sub(prev)
-  const vec = state.get('vec')
+  const orientation = state.get('orientation')
   // rotate 2D x-direction via y-axis
   // rotate 2D y-direction via x-axis
-  console.log(diff.x, diff.y)
-  const newVec = vec.clone()
-    .applyAxisAngle(new Vector3(0, 1, 0), speed * diff.x * -2)
-    .applyAxisAngle(new Vector3(1, 0, 0), speed * diff.y * -2)
-  return state.set('vec', newVec).set('prev', next)
+  const newOrientation = rotateX(
+    speed * diff.y * -2,
+    rotateY(speed * diff.x * 2, orientation)
+  )
+  return state.set('orientation', newOrientation).set('prev', next)
 }
 
 const setPoint = point => state => state.set('prev', point)

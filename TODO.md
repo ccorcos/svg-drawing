@@ -1,5 +1,7 @@
-- reflections
 - cube vis / draw
+  - use quaternions
+- kaleidoscope drawing
+- drawing on an angled surface
 
 
 - replay with slider
