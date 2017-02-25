@@ -1,0 +1,36 @@
+{
+  "name": "svg-drawing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "flyd": "^0.2.4",
+    "glamor": "^2.20.23",
+    "immutable": "^3.8.1",
+    "next": "^2.0.0-beta.32",
+    "ramda": "^0.23.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-redux": "^5.0.3",
+    "redux": "^3.6.0",
+    "redux-immutable": "^3.1.0",
+    "redux-thunk": "^2.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ccorcos/svg-drawing.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ccorcos/svg-drawing/issues"
+  },
+  "homepage": "https://github.com/ccorcos/svg-drawing#readme"
+}

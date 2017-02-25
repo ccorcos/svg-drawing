@@ -1,7 +1,6 @@
-import React from 'react'
-import { viewBox, colorOptions, widthOptions } from './defs'
+import { viewBox, colorOptions, widthOptions } from '../defs'
 
-const ColorPalette = props => {
+const ColorPalette = (props) => {
   const colors = colorOptions.map(color =>
     <div
       style={{
@@ -13,7 +12,7 @@ const ColorPalette = props => {
         borderWidth: 1,
         borderColor: 'black',
         borderStyle: 'solid',
-        opacity: props.style.get('stroke') === color ? 1 : 0.3,
+        opacity: props.state.getIn(['style', 'stroke']) === color ? 1 : 0.3,
       }}
       key={color}
       onClick={() => props.onStyle({stroke: color})}
@@ -43,7 +42,7 @@ const WidthPalette = props => {
         borderWidth: 1,
         borderColor: 'black',
         borderStyle: 'solid',
-        opacity: props.style.get('strokeWidth') === width ? 1 : 0.3,
+        opacity: props.state.getIn(['style', 'strokeWidth']) === width ? 1 : 0.3,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -68,8 +67,8 @@ const WidthPalette = props => {
 }
 
 const Undoable = props => {
-  const canUndo = props.paths.size > 1
-  const canRedo = props.paths.size > props.time + 1
+  const canUndo = props.state.get('paths').size > 1
+  const canRedo = props.state.get('paths').size > props.state.get('time') + 1
   return (
     <div style={{
       paddingTop: 5,
@@ -82,8 +81,8 @@ const Undoable = props => {
 }
 
 const Replay = props => {
-  const size = props.states.size - 1
-  const button = props.pause ? (
+  const size = props.state.get('states').size - 1
+  const button = props.state.get('pause') ? (
     <button onClick={props.onPlay}>
       play
     </button>
@@ -92,12 +91,12 @@ const Replay = props => {
       pause
     </button>
   )
-  const range = props.pause ? (
+  const range = props.state.get('pause') ? (
     <input
       type="range"
       min={0}
       max={size}
-      value={props.replay}
+      value={props.state.get('replay')}
       onChange={e => props.onReplay(e.target.value)}
     />
   ) : (
@@ -141,7 +140,7 @@ const getPoint = (e, n) => {
 
 const Drawing = props => {
 
-  const paths = props.paths.slice(0, props.time + 1).map((path, i) =>
+  const paths = props.state.get('paths').slice(0, props.state.get('time') + 1).map((path, i) =>
     <Path path={path} key={i}/>
   ).toArray()
 
@@ -153,10 +152,10 @@ const Drawing = props => {
       style={{flex: 1, cursor: 'crosshair'}}
       onMouseDown={e => props.onStart(getPoint(e, node))}
       onTouchStart={e => props.onStart(getPoint(e, node))}
-      onMouseMove={e => props.started && props.onMove(getPoint(e, node))}
-      onTouchMove={e => props.started && props.onMove(getPoint(e, node))}
-      onMouseUp={e => props.started && props.onEnd(getPoint(e, node))}
-      onTouchEnd={e => props.started && props.onEnd(getPoint(e, node))}
+      onMouseMove={e => props.state.get('started') && props.onMove(getPoint(e, node))}
+      onTouchMove={e => props.state.get('started') && props.onMove(getPoint(e, node))}
+      onMouseUp={e => props.state.get('started') && props.onEnd(getPoint(e, node))}
+      onTouchEnd={e => props.state.get('started') && props.onEnd(getPoint(e, node))}
     >
       {paths}
     </svg>
@@ -176,4 +175,13 @@ const SvgDrawing = props => {
   )
 }
 
-export default SvgDrawing
+const style = {
+  height: '500px',
+  width: '500px',
+  margin: '0 auto',
+}
+
+export default props =>
+  <div style={style}>
+    <SvgDrawing {...props}/>
+  </div>

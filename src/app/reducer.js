@@ -1,7 +1,7 @@
 import Immutable from 'immutable'
 import actionTypes from './actionTypes'
-import { minDelta } from './defs'
-import { distance } from './utils'
+import { minDelta } from '../defs'
+import { distance } from '../utils'
 
 const pipe = (fns, state) => state.withMutations(st =>
   fns.reduce((s, fn) => fn(s), st)
