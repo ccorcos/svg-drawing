@@ -1,6 +1,4 @@
-- kaleidoscope drawing
 - drawing on an angled surface
-
 
 - replay with slider
 - bonus

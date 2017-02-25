@@ -4,7 +4,6 @@ import { minDelta } from '../defs'
 import { distance, pipe } from '../utils'
 import { Vector3, Vector2, Matrix4 } from 'three'
 
-
 const Matrix = (...args) => {
   const m = new Matrix4()
   m.set(...args)

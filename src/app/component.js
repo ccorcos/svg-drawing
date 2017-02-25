@@ -1,5 +1,6 @@
 import { css } from 'glamor'
 import { viewBox, colorOptions, widthOptions } from '../defs'
+import R from 'ramda'
 
 const size = 500
 
@@ -145,28 +146,36 @@ const getPoint = (e, n) => {
 const Drawing = props => {
 
   const paths1 = props.state.get('paths').slice(0, props.state.get('time') + 1).map((path, i) =>
-    <Path path={path} key={i}/>
+    <Path path={path} key={`1-${i}`}/>
   ).toArray()
 
   const paths2 = props.state.get('paths').slice(0, props.state.get('time') + 1).map((path, i) =>
-    <Path path={path} key={i} style={{
+    <Path path={path} key={`2-${i}`} style={{
       transform: `rotate3d(1, 1, 0, 180deg)`,
     }}/>
   ).toArray()
 
   const paths3 = props.state.get('paths').slice(0, props.state.get('time') + 1).map((path, i) =>
-    <Path path={path} key={i} style={{
+    <Path path={path} key={`3-${i}`} style={{
       transformOrigin: `${size}px ${size}px`,
       transform: `rotate3d(-1, 1, 0, 180deg)`,
     }}/>
   ).toArray()
 
   const paths4 = props.state.get('paths').slice(0, props.state.get('time') + 1).map((path, i) =>
-    <Path path={path} key={i} style={{
+    <Path path={path} key={`4-${i}`} style={{
       transformOrigin: `${size}px ${size}px`,
       transform: `rotate3d(1, 1, 0, 180deg) rotate3d(-1, 1, 0, 180deg)`,
     }}/>
   ).toArray()
+
+
+  const orientation = props.state.get('orientation')
+  const rotation = `matrix3d(${orientation.elements.join(', ')})`
+
+  const paths = R.flatten(
+    R.zip(R.zip(R.zip(paths1, paths2), paths3), paths4),
+  )
 
   let node = undefined
   return (
@@ -174,6 +183,7 @@ const Drawing = props => {
       ref={n => node = n}
       viewBox={`0 0 ${viewBox} ${viewBox}`}
       style={{
+        transform: rotation,
         flex: 1,
         cursor: 'crosshair',
       }}
@@ -184,10 +194,7 @@ const Drawing = props => {
       onMouseUp={e => props.state.get('started') && props.onEnd(getPoint(e, node))}
       onTouchEnd={e => props.state.get('started') && props.onEnd(getPoint(e, node))}
     >
-      {paths1}
-      {paths2}
-      {paths3}
-      {paths4}
+      {paths}
       {/* <line
         x1="0"
         y1="0"
