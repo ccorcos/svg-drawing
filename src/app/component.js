@@ -149,7 +149,10 @@ const Drawing = props => {
     <svg
       ref={n => node = n}
       viewBox={`0 0 ${viewBox} ${viewBox}`}
-      style={{flex: 1, cursor: 'crosshair'}}
+      style={{
+        flex: 1,
+        cursor: 'crosshair',
+      }}
       onMouseDown={e => props.onStart(getPoint(e, node))}
       onTouchStart={e => props.onStart(getPoint(e, node))}
       onMouseMove={e => props.state.get('started') && props.onMove(getPoint(e, node))}

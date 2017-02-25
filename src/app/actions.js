@@ -1,6 +1,5 @@
 import actionTypes from './actionTypes'
-
-const time = fn => (...args) => ({...fn(...args), timestamp: Date.now()})
+import { time } from '../utils'
 
 export default {
   onStart: time(point => ({type: actionTypes.start, point})),

@@ -1,3 +1,6 @@
+- reflections
+- cube vis / draw
+
 
 - replay with slider
 - bonus
