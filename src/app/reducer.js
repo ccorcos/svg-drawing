@@ -2,13 +2,7 @@ import Immutable from 'immutable'
 import actionTypes from './actionTypes'
 import { minDelta } from '../defs'
 import { distance, pipe } from '../utils'
-import { Matrix4 } from 'three'
-
-const Matrix = (...args) => {
-  const m = new Matrix4()
-  m.set(...args)
-  return m
-}
+import { Matrix4, Vector3 } from 'three'
 
 export const drawingInitialState = Immutable.fromJS({
   time: 1,
@@ -42,12 +36,10 @@ export const drawingInitialState = Immutable.fromJS({
     //   ],
     // }
   ],
-  orientation: Matrix(
-    1, 0, 0, 0,
-    0, 1, 0, 0,
-    0, 0, 1, 0,
-    0, 0, 0, 1
-  ),
+  orientation: (new Matrix4()).makeRotationAxis(
+    (new Vector3(1, 1, 1)).normalize(),
+    0.8
+  )
 })
 
 const createPath = (point, style) => state =>

@@ -1,6 +1,7 @@
 import { css } from 'glamor'
 import { viewBox, colorOptions, widthOptions } from '../defs'
 import R from 'ramda'
+import { Vector4, Matrix4 } from 'three'
 
 const size = 500
 
@@ -135,7 +136,7 @@ const Path = props => {
   )
 }
 
-const getPoint = (e, n) => {
+const getPoint = (e, n, orientation) => {
   const box = n.getBoundingClientRect()
   return {
     x: (e.pageX - box.left) / box.width * viewBox,
@@ -173,6 +174,7 @@ const Drawing = props => {
   const orientation = props.state.get('orientation')
   const rotation = `matrix3d(${orientation.elements.join(', ')})`
 
+  // so that the paths are stacked on top of each other properly
   const paths = R.flatten(
     R.zip(R.zip(R.zip(paths1, paths2), paths3), paths4),
   )
@@ -186,13 +188,14 @@ const Drawing = props => {
         transform: rotation,
         flex: 1,
         cursor: 'crosshair',
+        border: '1px solid black',
       }}
-      onMouseDown={e => props.onStart(getPoint(e, node))}
-      onTouchStart={e => props.onStart(getPoint(e, node))}
-      onMouseMove={e => props.state.get('started') && props.onMove(getPoint(e, node))}
-      onTouchMove={e => props.state.get('started') && props.onMove(getPoint(e, node))}
-      onMouseUp={e => props.state.get('started') && props.onEnd(getPoint(e, node))}
-      onTouchEnd={e => props.state.get('started') && props.onEnd(getPoint(e, node))}
+      onMouseDown={e => props.onStart(getPoint(e, node, orientation))}
+      onTouchStart={e => props.onStart(getPoint(e, node, orientation))}
+      onMouseMove={e => props.state.get('started') && props.onMove(getPoint(e, node, orientation))}
+      onTouchMove={e => props.state.get('started') && props.onMove(getPoint(e, node, orientation))}
+      onMouseUp={e => props.state.get('started') && props.onEnd(getPoint(e, node, orientation))}
+      onTouchEnd={e => props.state.get('started') && props.onEnd(getPoint(e, node, orientation))}
     >
       {paths}
       {/* <line

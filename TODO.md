@@ -1,4 +1,5 @@
 - drawing on an angled surface
+- draw across drawings on a cube
 
 - replay with slider
 - bonus
