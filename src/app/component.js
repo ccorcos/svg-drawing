@@ -1,4 +1,7 @@
+import { css } from 'glamor'
 import { viewBox, colorOptions, widthOptions } from '../defs'
+
+const size = 500
 
 const ColorPalette = (props) => {
   const colors = colorOptions.map(color =>
@@ -126,6 +129,7 @@ const Path = props => {
       fill="transparent"
       strokeLinecap="round"
       strokeLinejoin="round"
+      style={props.style}
     />
   )
 }
@@ -140,8 +144,28 @@ const getPoint = (e, n) => {
 
 const Drawing = props => {
 
-  const paths = props.state.get('paths').slice(0, props.state.get('time') + 1).map((path, i) =>
+  const paths1 = props.state.get('paths').slice(0, props.state.get('time') + 1).map((path, i) =>
     <Path path={path} key={i}/>
+  ).toArray()
+
+  const paths2 = props.state.get('paths').slice(0, props.state.get('time') + 1).map((path, i) =>
+    <Path path={path} key={i} style={{
+      transform: `rotate3d(1, 1, 0, 180deg)`,
+    }}/>
+  ).toArray()
+
+  const paths3 = props.state.get('paths').slice(0, props.state.get('time') + 1).map((path, i) =>
+    <Path path={path} key={i} style={{
+      transformOrigin: `${size}px ${size}px`,
+      transform: `rotate3d(-1, 1, 0, 180deg)`,
+    }}/>
+  ).toArray()
+
+  const paths4 = props.state.get('paths').slice(0, props.state.get('time') + 1).map((path, i) =>
+    <Path path={path} key={i} style={{
+      transformOrigin: `${size}px ${size}px`,
+      transform: `rotate3d(1, 1, 0, 180deg) rotate3d(-1, 1, 0, 180deg)`,
+    }}/>
   ).toArray()
 
   let node = undefined
@@ -160,7 +184,30 @@ const Drawing = props => {
       onMouseUp={e => props.state.get('started') && props.onEnd(getPoint(e, node))}
       onTouchEnd={e => props.state.get('started') && props.onEnd(getPoint(e, node))}
     >
-      {paths}
+      {paths1}
+      {paths2}
+      {paths3}
+      {paths4}
+      {/* <line
+        x1="0"
+        y1="0"
+        x2={viewBox}
+        y2={viewBox}
+        style={{
+          stroke: 'red',
+          strokeWidth: 2,
+        }}
+      />
+      <line
+        x1="0"
+        y1={viewBox}
+        x2={viewBox}
+        y2="0"
+        style={{
+          stroke: 'red',
+          strokeWidth: 2,
+        }}
+      /> */}
     </svg>
   )
 
@@ -178,13 +225,13 @@ const SvgDrawing = props => {
   )
 }
 
-const style = {
-  height: '500px',
-  width: '500px',
+const style = css({
+  height: size,
+  width: size,
   margin: '0 auto',
-}
+})
 
 export default props =>
-  <div style={style}>
+  <div className={style}>
     <SvgDrawing {...props}/>
   </div>

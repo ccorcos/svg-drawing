@@ -10,29 +10,31 @@ export const drawingInitialState = Immutable.fromJS({
     stroke: 'black',
     strokeWidth: 4,
   },
-  paths: [{
-    style: {
-      stroke: 'blue',
-      strokeWidth: 16,
-    },
-    points: [
-      {x: 500, y: 500},
-      {x: 600, y: 530},
-      {x: 620, y: 410},
-    ]
-  }, {
-    style: {
-      stroke: 'red',
-      strokeWidth: 2,
-    },
-    points: [
-      {x: 0, y: 0},
-      {x: 0, y: 1000},
-      {x: 1000, y: 1000},
-      {x: 1000, y: 0},
-      {x: 0, y: 0},
-    ],
-  }]
+  paths: [
+    // {
+    //   style: {
+    //     stroke: 'blue',
+    //     strokeWidth: 16,
+    //   },
+    //   points: [
+    //     {x: 500, y: 500},
+    //     {x: 600, y: 530},
+    //     {x: 620, y: 410},
+    //   ]
+    // }, {
+    //   style: {
+    //     stroke: 'red',
+    //     strokeWidth: 2,
+    //   },
+    //   points: [
+    //     {x: 0, y: 0},
+    //     {x: 0, y: 1000},
+    //     {x: 1000, y: 1000},
+    //     {x: 1000, y: 0},
+    //     {x: 0, y: 0},
+    //   ],
+    // }
+  ]
 })
 
 const createPath = (point, style) => state =>

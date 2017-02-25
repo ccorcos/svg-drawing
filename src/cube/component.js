@@ -22,16 +22,11 @@ const styles = {
   }),
 }
 
-// get out a piece of paper and draw the transformations
-
+// moves the square so the center is at the origin
 const center = `translate3d(${nhalf}px, ${nhalf}px, 0)`
+// move the square forward and backward
 const front = `translate3d(0px, 0px, ${half}px)`
 const back = `translate3d(0px, 0px, ${nhalf}px)`
-
-
-// http://www.euclideanspace.com/maths/algebra/vectors/angleBetween/
-// angle = acos(v1•v2)
-// axis = norm(v1 x v2)
 
 const getPoint = (e, n) => {
   const box = n.getBoundingClientRect()
